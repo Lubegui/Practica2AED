@@ -156,7 +156,20 @@ p2
 * Añade a ``grafico2`` una capa para incluir un título con **ggtitle()** y almacénalo en ``grafico3``.
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio1.pdf``.
 
+```{r}
+rm(list=ls())
+```
+
+
 ```{r Solucion ejercicio 1}
+load("data/weatherAUS.RData")
+
+grafico1<- ggplot(ds, aes(x = MinTemp, y = MaxTemp))
+grafico1 <- grafico1 + geom_point()
+
+grafico2 <- ggplot(ds, aes(x = MinTemp, y = MaxTemp, color=RainTomorrow)) + geom_point()
+
+grafico3 <- grafico2+ggtitle('Temperatura máxima frente a temperatura mínima')
 
 ggsave('figs/Ejercicio1.pdf')
 ```
@@ -170,7 +183,25 @@ ggsave('figs/Ejercicio1.pdf')
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio2.pdf``.
 
 ```{r Solucion ejercicio 2}
+rm(list=ls())
+load("data/weatherAUS.RData")
+# Para que salga la leyenda en español más adelante
+ds$RainToday <- factor(ds$RainToday)
+levels(ds$RainToday) <- c('No','Sí')
 
+grafico <- ggplot(data=ds, aes(x=Temp9am, y=Pressure9am)) + geom_point()
+
+grafico <- ggplot(data=ds, aes(x=Temp9am, y=Pressure9am, shape=RainToday)) + geom_point()
+
+grafico <- ggplot(data=ds, aes(x=Temp9am, y=Pressure9am, color=RainToday)) + geom_point()
+# En este caso se observa mejor con el color ya que hay bastantes puntos muy juntos que impiden distinguir bien la forma
+
+grafico <- grafico + labs(title = "Medidas de presión frente a temperatura a las 9 de la mañana",
+       subtitle = "Indicando para cuáles de estas medidas llovió el mismo día",
+       x = "Temperatura (ºC)",
+       y = "Presión (mbar)",
+       caption = "Unidades no indicadas en el dataset original, pueden ser incorrectas",
+       colour='Llovió')
 ggsave('figs/Ejercicio2.pdf')
 ```
 
