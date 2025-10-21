@@ -383,8 +383,17 @@ El fichero ``iceRiver.RData`` contiene información del caudal de dos ríos isla
   * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio5.pdf``.
 
 ```{r Solucion ejercicio 6 }
-
-
+load('data/iceRiver.RData')
+#library(latex2exp) interpreta lo que se escribe en las leyendas como código latex
+grafico <- ggplot(data=ice.river.df) + geom_line(aes(x=time, y=flow.vat, color='red')) +  geom_line(aes(x=time, y=flow.jok, color='blue'))
+# Para poder poner bien la leyenda habría que reorganizar el dataframe de manera que haya solo una columna flujo y luego otra variable tipo factor que indique el río
+grafico <- grafico + labs(title = "Caudal de los ríos Vatnsdalsa y Eystri en función del día",
+       subtitle = "Observaciones del caudal diarias desde 1-1-1972 hasta 31-21-1974",
+       x = "Tiempo",
+       y = "Caudal (cms)",
+       caption = "Datasets procedentes de un artículo escrito por Tong, Thanoon y Gudmundsson (1985)",
+       colour='Río')
+grafico
 ```
 
 
