@@ -166,10 +166,13 @@ load("data/weatherAUS.RData")
 
 grafico1<- ggplot(ds, aes(x = MinTemp, y = MaxTemp))
 grafico1 <- grafico1 + geom_point()
+grafico1
 
 grafico2 <- ggplot(ds, aes(x = MinTemp, y = MaxTemp, color=RainTomorrow)) + geom_point()
+grafico2
 
 grafico3 <- grafico2+ggtitle('Temperatura máxima frente a temperatura mínima')
+grafico3
 
 ggsave('figs/Ejercicio1.pdf')
 ```
@@ -189,19 +192,27 @@ load("data/weatherAUS.RData")
 ds$RainToday <- factor(ds$RainToday)
 levels(ds$RainToday) <- c('No','Sí')
 
+# Gráfico básico con los puntos
 grafico <- ggplot(data=ds, aes(x=Temp9am, y=Pressure9am)) + geom_point()
+grafico
 
+# Cambiar la forma de los puntos según la variable RainToday
 grafico <- ggplot(data=ds, aes(x=Temp9am, y=Pressure9am, shape=RainToday)) + geom_point()
+grafico
 
+# Cambiar el color de los puntos en función de la variable RainToday
 grafico <- ggplot(data=ds, aes(x=Temp9am, y=Pressure9am, color=RainToday)) + geom_point()
+grafico
 # En este caso se observa mejor con el color ya que hay bastantes puntos muy juntos que impiden distinguir bien la forma
 
+# Añadir más elementos con labs
 grafico <- grafico + labs(title = "Medidas de presión frente a temperatura a las 9 de la mañana",
        subtitle = "Indicando para cuáles de estas medidas llovió el mismo día",
        x = "Temperatura (ºC)",
        y = "Presión (mbar)",
        caption = "Unidades no indicadas en el dataset original, pueden ser incorrectas",
        colour='Llovió')
+
 ggsave('figs/Ejercicio2.pdf')
 ```
 
@@ -222,14 +233,20 @@ load('data/iris_tidy.Rdata')
 
 str(iris.tidy)
 
-grafico.iris <- ggplot(data=iris.tidy, aes(x=Species, y=Value)) + geom_point()
+iris.grafico1 <- ggplot(data=iris.tidy, aes(x=Species, y=Value)) + geom_point()
+iris.grafico1
 
-grafico.iris2 <- ggplot(data=iris.tidy, aes(x=Species, y=Value, color=Part)) + geom_point() + facet_grid(.~Measure )
+# Separarlo en dos gráficos según la variable Measure
+iris.grafico2 <- ggplot(data=iris.tidy, aes(x=Species, y=Value, color=Part)) + geom_point() + facet_grid(Measure~. )
+iris.grafico2
 
-#grafico.iris2 <- ggplot(data=iris.tidy, aes(x=Species, y=Value, color=Part)) + geom_point() + facet_grid(Measure~. )
+iris.grafico2 <- ggplot(data=iris.tidy, aes(x=Species, y=Value, color=Part)) + geom_point() + facet_grid(.~Measure )
+iris.grafico2
 #Creo que se visualiza mejor si los mostramos uno a la izquierda y uno a la derecha
 
-grafico.iris2 <- ggplot(data=iris.tidy, aes(x=Species, y=Value, color=Part)) + geom_jitter() + facet_grid(.~Measure )
+# Vemos qué ocurre al colocar los puntos con geom_jitter()
+iris.grafico3 <- ggplot(data=iris.tidy, aes(x=Species, y=Value, color=Part)) + geom_jitter() + facet_grid(.~Measure )
+iris.grafico3
 #Se separan los puntos porque se añade un poco de ruido
 
 ggsave('figs/Ejercicio3.pdf') # se almacena el último gráfico generado
@@ -318,14 +335,22 @@ rm(list=ls())
 load('data/Ejercicio4_Data.Rdata')
 # Muestra las ventas cada mes para diferentes fabricantes
 
+# Gráfico de puntos
 grafico <- ggplot(data=DatosEjer4, aes(x=Fecha, y=Ventas, color=Fabricante)) + geom_point()
+grafico
 #Para representar la evolucón vendría mejor una línea
 
+# Añadimos línea
 grafico <- grafico + geom_line()
+grafico
 
+# Ponemos un tipo de línea diferente según la variable Fabricante
 grafico <- ggplot(data=DatosEjer4, aes(x=Fecha, y=Ventas, color=Fabricante)) + geom_point() + geom_line(aes(linetype = Fabricante))
+grafico
 
+# Añadimos título
 grafico <- grafico + ggtitle('Ventas mensuales de diferentes compañías tecnológicas')
+grafico
 
 ggsave('figs/Ejercicio4.pdf')
 ```
@@ -370,8 +395,20 @@ Añadir barras de error a un gráfico de línea.
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio5.pdf``.
 
 ```{r Solucion ejercicio 5}
+rm(list = ls())
+load('data/Experimento.Rdata')
 
+grafico <- ggplot(data=Experimento, aes(x=Dosis,y=Altura)) + geom_line(aes(linetype = Complemento)) + geom_point(aes(shape = Complemento))
+grafico
 
+grafico2 <- grafico + geom_errorbar(aes(ymin = Altura-Error_Altura, ymax = Altura+Error_Altura, width = 0.1, linetype = Complemento), position=position_dodge(0.08))
+grafico2
+
+grafico3 <- ggplot(data=Experimento, aes(x=Dosis,y=Altura, color = Complemento)) + geom_line() + geom_point()
+grafico3 <- grafico3 + scale_color_brewer(palette = "Reds") + geom_errorbar(aes(ymin = Altura-Error_Altura, ymax = Altura+Error_Altura, width = 0.1), position=position_dodge(0.08))
+grafico3
+
+ggsave('figs/Ejercicio5.pdf')
 ```
 
 ### **Ejercicio 6 **
@@ -383,9 +420,12 @@ El fichero ``iceRiver.RData`` contiene información del caudal de dos ríos isla
   * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio5.pdf``.
 
 ```{r Solucion ejercicio 6 }
+rm(list=ls())
 load('data/iceRiver.RData')
 #library(latex2exp) interpreta lo que se escribe en las leyendas como código latex
 grafico <- ggplot(data=ice.river.df) + geom_line(aes(x=time, y=flow.vat, color='red')) +  geom_line(aes(x=time, y=flow.jok, color='blue'))
+grafico
+
 # Para poder poner bien la leyenda habría que reorganizar el dataframe de manera que haya solo una columna flujo y luego otra variable tipo factor que indique el río
 grafico <- grafico + labs(title = "Caudal de los ríos Vatnsdalsa y Eystri en función del día",
        subtitle = "Observaciones del caudal diarias desde 1-1-1972 hasta 31-21-1974",
@@ -394,6 +434,8 @@ grafico <- grafico + labs(title = "Caudal de los ríos Vatnsdalsa y Eystri en fu
        caption = "Datasets procedentes de un artículo escrito por Tong, Thanoon y Gudmundsson (1985)",
        colour='Río')
 grafico
+
+ggsave('figs/Ejercicio6.pdf')
 ```
 
 
@@ -410,7 +452,19 @@ En esta sección vamos a utilizar **ggplot2** para representar distribuciones de
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio7.pdf``.
 
 ```{r Solucion ejercicio 7}
+rm(list=ls())
 
+load('data/weatherAUS_distributions.RData')
+
+grafico <- ggplot(data=ds, aes(x=Year, y=MinTemp)) + geom_boxplot(aes(fill=Year)) + labs(title = "Distribución de temperaturas máximas por año",
+       x = "Año",
+       y = "Temperatura (ºC)")
+grafico
+
+grafico2 <- grafico + theme(legend.position = 'none', axis.text.x = element_text(angle=45))
+grafico2
+
+ggsave('figs/Ejercicio7.pdf')
 ```
 
 ## Histogramas con **ggplot2**
@@ -513,8 +567,34 @@ ggplot(data=dataset_hist1, aes(x=AGE)) +
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio8.pdf``.
 
 ```{r Solucion ejercicio 8}
-# 
+rm(list=ls())
+load("data/dataset_hist.Rdata")
+# Histograma de la variable Height
+his <- ggplot(data=dataset_hist, aes(x=HEIGHT)) + geom_histogram()
+his
 
+# Añadir título y etiquetas
+his <- his+labs(title='Frecuencia de alturas en el dataset', x='Altura', y='Frecuencia')
+his
+
+# Ajustar rango y número de bins
+his <- ggplot(data=dataset_hist, aes(x=HEIGHT)) + geom_histogram(breaks=seq(155,195,length.out=20))+labs(title='Frecuencia de alturas en el dataset', x='Altura', y='Frecuencia')
+his
+
+# Ajustar colores y transparencia
+his <- ggplot(data=dataset_hist, aes(x=HEIGHT)) + geom_histogram(breaks=seq(155,195,length.out=20),
+                                                                 col='red',
+                                                                 fill='blue',
+                                                                 alpha=0.5) + 
+  labs(title='Frecuencia de alturas en el dataset', x='Altura', y='Frecuencia')
+his
+
+# Mostrar un histograma para cada valor de la variable MORT
+his2 <- his +  facet_grid(.~MORT)
+his2
+
+# Almacenar resultado
+ggsave('data/Ejercicio8.pdf')
 ```
 
 ## Gráficos de barras con **ggplot2**
